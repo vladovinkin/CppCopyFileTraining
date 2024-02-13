@@ -1,0 +1,2 @@
+This is input file
+For testing CopyFile program

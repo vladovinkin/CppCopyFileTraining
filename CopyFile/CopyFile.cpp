@@ -1,11 +1,43 @@
 #include <iostream>
+#include <fstream>
+#include <string>
+#include <optional>
 
 int main(int argc, char* argv[])
 {
-    std::cout << argc << "\n";
-    for (int i = 0; i < argc; ++i)
+    // Проверка правильности аргументов командной строки
+    if (argc != 3)
     {
-        std::cout << argv[i] << "\n";
+        std::cout << "Invalid arguments count\n";
+        std::cout << "Usage: CopyFile.exe <input file name> <output file name>\n";
+        return 1;
     }
+
+    // Открываем входной файл
+    std::ifstream input;
+    input.open(argv[1]);
+    if (!input.is_open())
+    {
+        std::cout << "Failed to open '" << argv[1] << "' for reading\n";
+        return 1;
+    }
+    
+    // Открываем выходной файл
+    std::ofstream output;
+    output.open(argv[2]);
+    if (!output.is_open())
+    {
+        std::cout << "Failed to open '" << argv[2] << "' for writing\n";
+        return 1;
+    }
+
+    // Копируем содержимое входного файла в выходной
+    char ch;
+    while (input.get(ch))
+    {
+        output.put(ch);
+    }
+    
     return 0;
+
 }
