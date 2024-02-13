@@ -35,7 +35,24 @@ int main(int argc, char* argv[])
     char ch;
     while (input.get(ch))
     {
-        output.put(ch);
+        if (!output.put(ch))
+        {
+            break;
+        }
+    }
+
+    // Проверяем случилась ли проблема чтения входного файла
+    if (input.bad())
+    {
+        std::cout << "Failed to read data from input file\n";
+        return 1;
+    }
+
+    // Проверяем на ошибку записи в выходной файл
+    if (!output.flush())
+    {
+        std::cout << "Failed to write data to output file\n";
+        return 1;
     }
     
     return 0;
