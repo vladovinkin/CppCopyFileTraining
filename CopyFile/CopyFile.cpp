@@ -1,7 +1,8 @@
-#include <iostream>
+п»ї#include <iostream>
 #include <fstream>
 #include <string>
 #include <optional>
+#include "CopyFile.h"
 
 struct Args
 {
@@ -13,6 +14,8 @@ std::optional<Args> ParseArgs(int argc, char* argv[])
 {
     if (argc != 3)
     {
+        std::cout << "Invalid arguments count\n";
+        std::cout << "Usage: CopyFile.exe <input file name> <output file name>\n";
         return std::nullopt;
     }
     Args args;
@@ -21,37 +24,8 @@ std::optional<Args> ParseArgs(int argc, char* argv[])
     return args;
 }
 
-int main(int argc, char* argv[])
+void CopyStreams(std::ifstream& input, std::ofstream& output)
 {
-    // Проверка правильности аргументов командной строки
-    auto args = ParseArgs(argc, argv);
-
-    if (!args)
-    {
-        std::cout << "Invalid arguments count\n";
-        std::cout << "Usage: CopyFile.exe <input file name> <output file name>\n";
-        return 1;
-    }
-
-    // Открываем входной файл
-    std::ifstream input;
-    input.open(args->inputFileName);
-    if (!input.is_open())
-    {
-        std::cout << "Failed to open '" << args->inputFileName << "' for reading\n";
-        return 1;
-    }
-    
-    // Открываем выходной файл
-    std::ofstream output;
-    output.open(args->outputFileName);
-    if (!output.is_open())
-    {
-        std::cout << "Failed to open '" << args->outputFileName << "' for writing\n";
-        return 1;
-    }
-
-    // Копируем содержимое входного файла в выходной
     char ch;
     while (input.get(ch))
     {
@@ -60,15 +34,47 @@ int main(int argc, char* argv[])
             break;
         }
     }
+}
 
-    // Проверяем случилась ли проблема чтения входного файла
+int main(int argc, char* argv[])
+{
+    // РџСЂРѕРІРµСЂРєР° РїСЂР°РІРёР»СЊРЅРѕСЃС‚Рё Р°СЂРіСѓРјРµРЅС‚РѕРІ РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё
+    auto args = ParseArgs(argc, argv);
+
+    if (!args)
+    {
+        return 1;
+    }
+
+    // РћС‚РєСЂС‹РІР°РµРј РІС…РѕРґРЅРѕР№ С„Р°Р№Р»
+    std::ifstream input;
+    input.open(args->inputFileName);
+    if (!input.is_open())
+    {
+        std::cout << "Failed to open '" << args->inputFileName << "' for reading\n";
+        return 1;
+    }
+    
+    // РћС‚РєСЂС‹РІР°РµРј РІС‹С…РѕРґРЅРѕР№ С„Р°Р№Р»
+    std::ofstream output;
+    output.open(args->outputFileName);
+    if (!output.is_open())
+    {
+        std::cout << "Failed to open '" << args->outputFileName << "' for writing\n";
+        return 1;
+    }
+
+    // РљРѕРїРёСЂСѓРµРј СЃРѕРґРµСЂР¶РёРјРѕРµ РІС…РѕРґРЅРѕРіРѕ С„Р°Р№Р»Р° РІ РІС‹С…РѕРґРЅРѕР№
+    CopyStreams(input, output);
+
+    // РџСЂРѕРІРµСЂСЏРµРј СЃР»СѓС‡РёР»Р°СЃСЊ Р»Рё РїСЂРѕР±Р»РµРјР° С‡С‚РµРЅРёСЏ РІС…РѕРґРЅРѕРіРѕ С„Р°Р№Р»Р°
     if (input.bad())
     {
         std::cout << "Failed to read data from input file\n";
         return 1;
     }
 
-    // Проверяем на ошибку записи в выходной файл
+    // РџСЂРѕРІРµСЂСЏРµРј РЅР° РѕС€РёР±РєСѓ Р·Р°РїРёСЃРё РІ РІС‹С…РѕРґРЅРѕР№ С„Р°Р№Р»
     if (!output.flush())
     {
         std::cout << "Failed to write data to output file\n";
