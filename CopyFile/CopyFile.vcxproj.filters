@@ -29,4 +29,9 @@
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="NonEmptyFile.txt" />
+    <Text Include="empty.txt" />
+    <Text Include="input.txt" />
+  </ItemGroup>
 </Project>
